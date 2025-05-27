@@ -71,7 +71,7 @@ jobs:
       with:
         SSH_PRIVATE_KEY: ${{ secrets.SERVER_PRIVATE_SSH_KEY }}
         ARGS: "-rlgoDzvc -i"
-        SOURCE: "dist/src"
+        SOURCE: ""
         REMOTE_HOST: ${{ secrets.SERVER_ADDRESS }}
         REMOTE_USER: ${{ secrets.USER_NAME }}
         TARGET: /opt/$APP_NAME
