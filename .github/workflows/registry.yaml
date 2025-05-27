@@ -63,38 +63,51 @@ jobs:
           echo "${{ steps.meta.outputs.tags }}"
           # You can add more verification steps here, e.g., pulling the image to ensure it's accessible.
 
-  deploy:
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
+#  deploy:
+#    runs-on: ubuntu-latest
+#    steps:
+#      - name: Checkout code
+#        uses: actions/checkout@v4
+#
+#      - name: Start ssh-agent and add key
+#        uses: webfactory/ssh-agent@v0.9.0
+#        with:
+#          ssh-private-key: ${{ secrets.SERVER_PRIVATE_SSH_KEY }}
+#
+#      - name: Deploy app to server
+#        run: |
+#          SERVER_USER="${{ secrets.USER_NAME }}"
+#          SERVER_IP="${{ secrets.SERVER_ADDRESS }}"
+#          APP_NAME="schluesselmomente-cms"
+#          DEPLOY_DIR="/opt/$APP_NAME"
+#
+#          ssh $SERVER_USER@$SERVER_IP "mkdir -p $DEPLOY_DIR"
+#          scp ./docker-compose.yml $SERVER_USER@$SERVER_IP:$DEPLOY_DIR/
+#
+#          # Deploy .env securely
+#          ssh $SERVER_USER@$SERVER_IP << EOF
+#            echo "${{ steps.env_content_step.outputs.APP_SECRETS_ENV_CONTENT }}" > $DEPLOY_DIR/.env
+#            chmod 600 $DEPLOY_DIR/.env
+#            cd $DEPLOY_DIR
+#
+#            docker login ghcr.io -u ${{ github.actor }} -p ${{ secrets.GITHUB_TOKEN }}
+#            docker compose pull
+#            docker compose up -d
+#            docker image prune -f
+#          EOF
+#            env:
+#              # Pass GITHUB_TOKEN as an environment variable for docker login inside SSH session
+#              GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Start ssh-agent and add key
-        uses: webfactory/ssh-agent@v0.9.0
-        with:
-          ssh-private-key: ${{ secrets.SERVER_PRIVATE_SSH_KEY }}
 
-      - name: Deploy app to server
-        run: |
-          SERVER_USER="${{ secrets.USER_NAME }}"
-          SERVER_IP="${{ secrets.SERVER_ADDRESS }}"
-          APP_NAME="schluesselmomente-cms"
-          DEPLOY_DIR="/opt/$APP_NAME"
 
-          ssh $SERVER_USER@$SERVER_IP "mkdir -p $DEPLOY_DIR"
-          scp ./docker-compose.yml $SERVER_USER@$SERVER_IP:$DEPLOY_DIR/
-
-          # Deploy .env securely
-          ssh $SERVER_USER@$SERVER_IP << EOF
-            echo "${{ steps.env_content_step.outputs.APP_SECRETS_ENV_CONTENT }}" > $DEPLOY_DIR/.env
-            chmod 600 $DEPLOY_DIR/.env
-            cd $DEPLOY_DIR
-
-            docker login ghcr.io -u ${{ github.actor }} -p ${{ secrets.GITHUB_TOKEN }}
-            docker compose pull
-            docker compose up -d
-            docker image prune -f
-          EOF
-            env:
-              # Pass GITHUB_TOKEN as an environment variable for docker login inside SSH session
-              GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+  - name: Deploy to Staging server
+    uses: easingthemes/ssh-deploy@main
+    with:
+      SSH_PRIVATE_KEY: ${{ secrets.SERVER_PRIVATE_SSH_KEY }}
+      ARGS: "-rlgoDzvc -i"
+      SOURCE: "dist/src"
+      REMOTE_HOST: ${{ secrets.SERVER_ADDRESS }}
+      REMOTE_USER: ${{ secrets.USER_NAME }}
+      TARGET: /opt/$APP_NAME
+      EXCLUDE: "/dist/, /node_modules/"
