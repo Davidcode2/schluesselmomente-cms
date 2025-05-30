@@ -2,8 +2,7 @@ version: "3"
 services:
   strapi:
     container_name: schluesselmomente-cms
-    build: .
-    #image: strapi:latest
+    image: ghcr.io/davidcode2/schluesselmomente-cms:latest
     restart: unless-stopped
     env_file: .env
     environment:
