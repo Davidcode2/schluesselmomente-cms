@@ -19,6 +19,10 @@ jobs:
       contents: read # Allows the workflow to read the repository content
       packages: write # Allows the workflow to publish packages (Docker images) to GHCR
 
+    if: |
+      steps.filter.outputs.src == 'true' || # If src changed (from paths-filter in this job)
+      github.event_name == 'workflow_dispatch' # Allow manual trigger to bypass path check
+
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4 # Action to checkout your repository code
@@ -63,25 +67,10 @@ jobs:
           echo "Successfully pushed images to GHCR:"
           echo "${{ steps.meta.outputs.tags }}"
           # You can add more verification steps here, e.g., pulling the image to ensure it's accessible.
-          
-#  deploy:
-#    runs-on: ubuntu-latest
-#    steps:
-#    - name: Check out repository code
-#      uses: actions/checkout@v3
-#
-#    - name: Deploy to Staging server
-#      uses: easingthemes/ssh-deploy@main
-#      with:
-#        SSH_PRIVATE_KEY: ${{ secrets.SERVER_PRIVATE_SSH_KEY }}
-#        ARGS: "-rlgoDzvc -i"
-#        REMOTE_HOST: ${{ secrets.SERVER_ADDRESS }}
-#        REMOTE_USER: ${{ secrets.USER_NAME }}
-#        TARGET: /opt/$APP_NAME
-#        EXCLUDE: "/dist/, /node_modules/"
 
   deploy:
     runs-on: ubuntu-latest
+    needs: build-and-push
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
@@ -99,7 +88,7 @@ jobs:
           DEPLOY_DIR="/opt/$APP_NAME"
 
           ssh -o StrictHostKeyChecking=no $SERVER_USER@$SERVER_IP "mkdir -p $DEPLOY_DIR"
-          scp -o StrictHostKeyChecking=no ./docker-compose.prod.yml $SERVER_USER@$SERVER_IP:$DEPLOY_DIR/
+          scp -o StrictHostKeyChecking=no ./docker-compose.prod.yml ./config ./src ./public ./package.json ./package-lock.json $SERVER_USER@$SERVER_IP:$DEPLOY_DIR/
 
           # Deploy .env securely
           ssh -o StrictHostKeyChecking=no $SERVER_USER@$SERVER_IP << EOF
