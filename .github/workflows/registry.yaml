@@ -12,16 +12,33 @@ env:
   IMAGE_NAME: ${{ github.repository }}
 
 jobs:
+
+  changes:
+  runs-on: ubuntu-latest
+  outputs:
+    src: ${{ steps.filter.outputs.src }}
+  steps:
+    - name: Checkout repository
+      uses: actions/checkout@v4
+
+    - name: Check for relevant changes
+      id: filter
+      uses: dorny/paths-filter@v3
+      with:
+        filters: |
+          src:
+            - 'src/**'
+#            - 'dockerfile.prod'
+#            - 'docker-compose.prod.yml'
+
   build-and-push:
     runs-on: ubuntu-latest # Use the latest Ubuntu runner
+    needs: changes
+    if: needs.changes.outputs.src == 'true' || github.event_name == 'workflow_dispatch'
 
     permissions:
       contents: read # Allows the workflow to read the repository content
       packages: write # Allows the workflow to publish packages (Docker images) to GHCR
-
-    if: |
-      steps.filter.outputs.src == 'true' || 
-      github.event_name == 'workflow_dispatch' 
 
     steps:
       - name: Checkout repository
