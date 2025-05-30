@@ -97,11 +97,11 @@ jobs:
           APP_NAME="schluesselmomente-cms"
           DEPLOY_DIR="/opt/$APP_NAME"
 
-          ssh $SERVER_USER@$SERVER_IP "mkdir -p $DEPLOY_DIR"
-          scp ./docker-compose.yml $SERVER_USER@$SERVER_IP:$DEPLOY_DIR/
+          ssh -o StrictHostKeyChecking=no $SERVER_USER@$SERVER_IP "mkdir -p $DEPLOY_DIR"
+          scp -o StrictHostKeyChecking=no ./docker-compose.yml $SERVER_USER@$SERVER_IP:$DEPLOY_DIR/
 
           # Deploy .env securely
-          ssh $SERVER_USER@$SERVER_IP << EOF
+          ssh -o StrictHostKeyChecking=no $SERVER_USER@$SERVER_IP << EOF
             echo "${{ secrets.APP_SECRETS_ENV_CONTENT }}" > $DEPLOY_DIR/.env
             chmod 600 $DEPLOY_DIR/.env
             cd $DEPLOY_DIR
@@ -111,9 +111,9 @@ jobs:
             docker compose up -d
             docker image prune -f
           EOF
-            env:
-              # Pass GITHUB_TOKEN as an environment variable for docker login inside SSH session
-              GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        env:
+          # Pass GITHUB_TOKEN as an environment variable for docker login inside SSH session
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
 
 
