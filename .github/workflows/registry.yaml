@@ -20,8 +20,8 @@ jobs:
       packages: write # Allows the workflow to publish packages (Docker images) to GHCR
 
     if: |
-      steps.filter.outputs.src == 'true' || # If src changed (from paths-filter in this job)
-      github.event_name == 'workflow_dispatch' # Allow manual trigger to bypass path check
+      steps.filter.outputs.src == 'true' || 
+      github.event_name == 'workflow_dispatch' 
 
     steps:
       - name: Checkout repository
