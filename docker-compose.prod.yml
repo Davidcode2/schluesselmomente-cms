@@ -27,6 +27,7 @@ services:
       - "1337:1337"
     networks:
       - strapi
+      - app-network
     depends_on:
       - strapiDB
 
@@ -56,3 +57,7 @@ networks:
   strapi:
     name: Strapi
     driver: bridge
+  app-network:
+    external: true
+
+
