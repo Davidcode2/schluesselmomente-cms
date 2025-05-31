@@ -102,7 +102,7 @@ jobs:
           SERVER_USER="${{ secrets.USER_NAME }}"
           SERVER_IP="${{ secrets.SERVER_ADDRESS }}"
           APP_NAME="schluesselmomente-cms"
-          DEPLOY_DIR="/opt/$APP_NAME"
+          DEPLOY_DIR="/opt/deployment/$APP_NAME"
 
           ssh -o StrictHostKeyChecking=no $SERVER_USER@$SERVER_IP "mkdir -p $DEPLOY_DIR"
 
