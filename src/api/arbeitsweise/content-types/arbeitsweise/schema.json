@@ -1,0 +1,17 @@
+{
+  "kind": "singleType",
+  "collectionName": "arbeitsweises",
+  "info": {
+    "singularName": "arbeitsweise",
+    "pluralName": "arbeitsweises",
+    "displayName": "Arbeitsweise"
+  },
+  "options": {
+    "draftAndPublish": true
+  },
+  "attributes": {
+    "content": {
+      "type": "richtext"
+    }
+  }
+}

@@ -1,0 +1,27 @@
+{
+  "kind": "collectionType",
+  "collectionName": "simple_lists",
+  "info": {
+    "singularName": "simple-list",
+    "pluralName": "simple-lists",
+    "displayName": "Simple List",
+    "description": ""
+  },
+  "options": {
+    "draftAndPublish": true
+  },
+  "attributes": {
+    "title": {
+      "type": "string"
+    },
+    "Items": {
+      "displayName": "Item list",
+      "type": "component",
+      "repeatable": true,
+      "component": "shared.item-list"
+    },
+    "rank": {
+      "type": "integer"
+    }
+  }
+}

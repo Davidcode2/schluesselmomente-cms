@@ -1,0 +1,39 @@
+{
+  "kind": "singleType",
+  "collectionName": "costs",
+  "info": {
+    "singularName": "cost",
+    "pluralName": "costs",
+    "displayName": "Cost",
+    "description": ""
+  },
+  "options": {
+    "draftAndPublish": true
+  },
+  "attributes": {
+    "PreisEinzel": {
+      "type": "string"
+    },
+    "PreisPaar": {
+      "type": "string"
+    },
+    "PreisEinzelErst": {
+      "type": "string"
+    },
+    "PreisPaarErst": {
+      "type": "string"
+    },
+    "DauerPaar": {
+      "type": "string"
+    },
+    "DauerEinzel": {
+      "type": "string"
+    },
+    "DauerEinzelErst": {
+      "type": "string"
+    },
+    "DauerPaarErst": {
+      "type": "string"
+    }
+  }
+}

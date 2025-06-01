@@ -1,0 +1,23 @@
+{
+  "kind": "collectionType",
+  "collectionName": "references",
+  "info": {
+    "singularName": "reference",
+    "pluralName": "references",
+    "displayName": "Reference"
+  },
+  "options": {
+    "draftAndPublish": true
+  },
+  "attributes": {
+    "reference": {
+      "type": "text"
+    },
+    "author": {
+      "type": "string"
+    },
+    "nameChanged": {
+      "type": "boolean"
+    }
+  }
+}
